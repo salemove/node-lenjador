@@ -12,8 +12,14 @@ class Logasm
   constructor:(adapters) ->
     @adapters = adapters
 
+  silly: ->
+    @log 'silly', arguments
+
   debug: ->
     @log 'debug', arguments
+
+  verbose: ->
+    @log 'verbose', arguments
 
   info: ->
     @log 'info', arguments
