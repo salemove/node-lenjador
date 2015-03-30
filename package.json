@@ -3,18 +3,18 @@
   "version": "0.1.0",
   "author": "Salemove <support@salemove.com>",
   "description": "It's logasmic",
-  "reporistory" : {
-    "type" : "git",
-    "url" : "https://github.com/salemove/node-logasm"
+  "reporistory": {
+    "type": "git",
+    "url": "https://github.com/salemove/node-logasm"
   },
-  "license" : "Apache-2.0",
+  "license": "Apache-2.0",
   "main": "./lib/logasm",
   "scripts": {
     "test": "mocha"
   },
-  "dependencies" : {
+  "dependencies": {
     "coffee-script": ">=1.4",
-    "amqplib" : ">=0.1.3",
+    "amqplib": ">=0.1.3",
     "winston": ">= 0.9",
     "cycle": "1.0.x",
     "winston-logstash-udp": ">=0.0.4",
@@ -22,12 +22,25 @@
     "underscore": ">=1.6",
     "q": ">= 1.0"
   },
-  "devDependencies" : {
-    "mocha" : "latest",
+  "devDependencies": {
+    "mocha": "latest",
     "chai": "latest",
-    "should" : ">=3.1",
+    "should": ">=3.1",
     "sinon": "latest"
-  }
-
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/salemove/node-logasm.git"
+  },
+  "keywords": [
+    "logger",
+    "logstash"
+  ],
+  "bugs": {
+    "url": "https://github.com/salemove/node-logasm/issues"
+  },
+  "homepage": "https://github.com/salemove/node-logasm"
 }
-
