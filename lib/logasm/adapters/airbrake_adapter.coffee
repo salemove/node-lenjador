@@ -22,6 +22,6 @@ class AirbrakeAdapter
         else
           errorLogToErrorObject(args)
 
-      airbrake.notify errorObject
+      @logger.notify errorObject
 
 module.exports = AirbrakeAdapter
