@@ -1,6 +1,7 @@
 Logasm = require '../lib/logasm'
 StdoutAdapter = require '../lib/logasm/adapters/stdout_adapter'
 LogstashAdapter = require '../lib/logasm/adapters/logstash_adapter'
+AirbrakeAdapter = require '../lib/logasm/adapters/airbrake_adapter'
 
 describe 'Logasm', ->
   it 'creates stdout logger', (done) ->
@@ -15,6 +16,15 @@ describe 'Logasm', ->
 
     logasm.adapters.should.have.length(1)
     logasm.adapters[0].should.be.an.instanceof(LogstashAdapter)
+    done()
+
+  it 'creates airbrake logger', (done) ->
+    logasm = Logasm.build "My service", {
+      airbrake: {host: "salemove.io", clientId: 'clientId', environments : ['development']}
+    }
+
+    logasm.adapters.should.have.length(1)
+    logasm.adapters[0].should.be.an.instanceof(AirbrakeAdapter)
     done()
 
   it 'creates multiple loggers', (done) ->
