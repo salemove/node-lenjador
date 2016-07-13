@@ -42,7 +42,7 @@ describe 'Logasm', ->
 
   context 'when preprocessor defined', ->
     preprocessor = {
-      process: sinon.spy()
+      process: sinon.stub().returns({data:'processed', message: 'Received message'})
     }
     adapter = {
       log: sinon.spy()
@@ -55,7 +55,7 @@ describe 'Logasm', ->
       @logasm.info('Received message', {data: 'data'})
 
       expect(preprocessor.process).to.be.calledWith({data: 'data', message: 'Received message'})
-      expect(adapter.log).to.be.called
+      expect(adapter.log).to.be.calledWith("info", {data:'processed', message: 'Received message'})
 
   context 'when parsing log data', ->
     beforeEach ->
