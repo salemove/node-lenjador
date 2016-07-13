@@ -26,7 +26,9 @@
     "mocha": "latest",
     "chai": "latest",
     "should": ">=3.1",
-    "sinon": "latest"
+    "sinon": "latest",
+    "memo-is": "~> 0.0.2",
+    "sinon-chai": "~> 2.8.0"
   },
   "directories": {
     "test": "test"
