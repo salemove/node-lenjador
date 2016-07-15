@@ -1,16 +1,18 @@
 _  = require 'underscore'
 adaptersFactory = require('./logasm/adapters')
+preprocessorsFactory = require('./logasm/preprocessors')
 
 class Logasm
-  @build: (serviceName, loggersConfig) ->
+  @build: (serviceName, loggersConfig, preprocessorsConfig = {}) ->
     loggersConfig = {stdout: {}} if loggersConfig is undefined
     adapters = for type, args of loggersConfig
       adaptersFactory.getAdapter(type, serviceName, args)
+    preprocessors = for type, args of preprocessorsConfig
+      preprocessorsFactory.getPreprocessor(type, args)
 
-    new Logasm(adapters)
+    new Logasm(adapters, preprocessors)
 
-  constructor:(adapters) ->
-    @adapters = adapters
+  constructor:(@adapters, @preprocessors) ->
 
   silly: =>
     @log 'silly', arguments
@@ -32,8 +34,14 @@ class Logasm
 
   log: (level, args) =>
     data = @parseLogData.apply(@, args)
+    processedData = @preprocess(data)
     for adapter in @adapters
-      adapter.log level, data
+      adapter.log level, processedData
+
+  preprocess: (data) =>
+    _.reduce(@preprocessors, (processedData, preprocessor) =>
+      preprocessor.process(processedData)
+    , data)
 
   parseLogData: (message, metadata) ->
     if @isHash(message)

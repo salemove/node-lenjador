@@ -1,6 +1,7 @@
 Logasm = require '../lib/logasm'
 StdoutAdapter = require '../lib/logasm/adapters/stdout_adapter'
 LogstashAdapter = require '../lib/logasm/adapters/logstash_adapter'
+Blacklist = require '../lib/logasm/preprocessors/blacklist'
 
 describe 'Logasm', ->
   it 'creates stdout logger', (done) ->
@@ -31,6 +32,30 @@ describe 'Logasm', ->
     logasm.adapters.should.have.length(1)
     logasm.adapters[0].should.be.an.instanceof(StdoutAdapter)
     done()
+
+  it 'creates preprocessor when defined', (done) ->
+    logasm = Logasm.build "My service", undefined, {blacklist: {fields: []}}
+
+    logasm.preprocessors.should.have.length(1)
+    logasm.preprocessors[0].should.be.an.instanceof(Blacklist)
+    done()
+
+  context 'when preprocessor defined', ->
+    preprocessor = {
+      process: sinon.stub().returns({data:'processed', message: 'Received message'})
+    }
+    adapter = {
+      log: sinon.spy()
+    }
+
+    beforeEach ->
+      @logasm = new Logasm([adapter], [preprocessor])
+
+    it 'preprocesses data before logging', ->
+      @logasm.info('Received message', {data: 'data'})
+
+      expect(preprocessor.process).to.be.calledWith({data: 'data', message: 'Received message'})
+      expect(adapter.log).to.be.calledWith("info", {data:'processed', message: 'Received message'})
 
   context 'when parsing log data', ->
     beforeEach ->
