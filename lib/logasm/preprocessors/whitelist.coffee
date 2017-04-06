@@ -49,10 +49,16 @@ class Whitelist
     , {})
 
   _processValue: (parentPointer, value) ->
-    if parentPointer of @fieldsToInclude
+    if (parentPointer of @fieldsToInclude) || @_matchesWildcard(parentPointer)
       value
     else
       @_mask(value)
+
+  _matchesWildcard: (parentPointer) ->
+    Object.keys(@fieldsToInclude).some((fieldToInclude) ->
+      wildcardMatcher = RegExp("^#{fieldToInclude.replace(/\/~/g, '/[^/]+')}$")
+      parentPointer.match(wildcardMatcher)
+    )
 
   _mask: (value) ->
     if value && _.isFunction(value['toString']) && !_.isBoolean(value)
