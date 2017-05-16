@@ -1,6 +1,7 @@
 winston = require('winston')
 _  = require 'underscore'
 LogstashUDP = require('winston-logstash-udp').LogstashUDP
+buildEvent = require('./logstash_adapter/event')
 
 class LogstashAdapter
   constructor:(level, service, {host, port}) ->
@@ -16,7 +17,7 @@ class LogstashAdapter
     @logger.add LogstashUDP, options
 
   log:(level, args) ->
-    args = _.extend({}, args)
+    event = buildEvent(args)
     message = args['message']
 
     if message
