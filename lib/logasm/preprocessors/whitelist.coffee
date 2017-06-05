@@ -13,6 +13,10 @@ class Whitelist
   constructor: (config) ->
     pointers = config.pointers || []
 
+    # Winston logs the first argument as `message` field. Making sure this is
+    # always whitelisted.
+    pointers.push('/message')
+
     @whitelistedFields = {}
 
     for pointer in pointers
