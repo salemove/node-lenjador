@@ -1,6 +1,5 @@
 Logasm = require '../lib/logasm'
 StdoutAdapter = require '../lib/logasm/adapters/stdout_adapter'
-LogstashAdapter = require '../lib/logasm/adapters/logstash_adapter'
 Blacklist = require '../lib/logasm/preprocessors/blacklist'
 
 describe 'Logasm', ->
@@ -9,21 +8,6 @@ describe 'Logasm', ->
 
     logasm.adapters.should.have.length(1)
     logasm.adapters[0].should.be.an.instanceof(StdoutAdapter)
-    done()
-
-  it 'creates logstash logger', (done) ->
-    logasm = Logasm.build "My service", {logstash: {host: 'localhost', port: 5229}}
-
-    logasm.adapters.should.have.length(1)
-    logasm.adapters[0].should.be.an.instanceof(LogstashAdapter)
-    done()
-
-  it 'creates multiple loggers', (done) ->
-    logasm = Logasm.build "My service", {stdout: {}, logstash: {host: 'localhost', port: 5229}}
-
-    logasm.adapters.should.have.length(2)
-    logasm.adapters[0].should.be.an.instanceof(StdoutAdapter)
-    logasm.adapters[1].should.be.an.instanceof(LogstashAdapter)
     done()
 
   it 'creates stdout logger when no loggers are specified', (done) ->

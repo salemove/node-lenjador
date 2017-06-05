@@ -13,14 +13,12 @@
     "test": "mocha"
   },
   "dependencies": {
-    "amqplib": "^0.5.1",
     "async": "^2.4.1",
     "coffee-script": "^1.12.6",
     "cycle": "1.0.x",
     "q": "^2.0.3",
     "underscore": ">=1.6",
-    "winston": "^2.3.1",
-    "winston-logstash-udp": "^0.2.1"
+    "winston": "^2.3.1"
   },
   "devDependencies": {
     "chai": "^4.0.1",
@@ -34,8 +32,7 @@
     "test": "test"
   },
   "keywords": [
-    "logger",
-    "logstash"
+    "logger"
   ],
   "bugs": {
     "url": "https://github.com/salemove/node-logasm/issues"
