@@ -1,15 +1,26 @@
 {isObject} = require('../object_helpers')
 
+isWildcardPointer = (pointer) ->
+  pointer.match(/\/\~\/|\~$/)
+
 class Whitelist
 
   MASKED_VALUE = '*****'
 
   constructor: (config) ->
     pointers = config.pointers || []
-    @fieldsToInclude = {}
+
+    @exactComparisonFields = {}
+    @regexComparisonFields = []
+
     for pointer in pointers
       @_validatePointer(pointer)
-      @fieldsToInclude[@_decodePointer(pointer)] = true
+
+      if isWildcardPointer(pointer)
+        wildcardMatcher = RegExp("^#{pointer.replace(/\/~/g, '/[^/]+')}$")
+        @regexComparisonFields.push(wildcardMatcher)
+      else
+        @exactComparisonFields[@_decodePointer(pointer)] = true
 
   process: (data) ->
     @processData('', data)
@@ -48,15 +59,13 @@ class Whitelist
     , {})
 
   _processValue: (parentPointer, value) ->
-    if (parentPointer of @fieldsToInclude) || @_matchesWildcard(parentPointer)
+    if (parentPointer of @exactComparisonFields) || @_matchesWildcard(parentPointer)
       value
     else
       MASKED_VALUE
 
   _matchesWildcard: (parentPointer) ->
-    Object.keys(@fieldsToInclude).some((fieldToInclude) ->
-      wildcardMatcher = RegExp("^#{fieldToInclude.replace(/\/~/g, '/[^/]+')}$")
+    @regexComparisonFields.some (wildcardMatcher) ->
       parentPointer.match(wildcardMatcher)
-    )
 
 module.exports = Whitelist
