@@ -1,4 +1,4 @@
-_ = require('underscore')
+{isObject} = require('../object_helpers')
 
 class Whitelist
 
@@ -24,15 +24,15 @@ class Whitelist
       .replace(/~1/g, '/')
 
   processData: (parentPointer, data) ->
-    if _.isArray(data)
+    if Array.isArray(data)
       @_processArray(parentPointer, data)
-    else if _.isObject(data)
+    else if isObject(data)
       @_processObject(parentPointer, data)
     else
       @_processValue(parentPointer, data)
 
   _processArray: (parentPointer, array) ->
-    _.reduce(array, (mem, value, index) =>
+    array.reduce((mem, value, index) =>
       pointer = "#{parentPointer}/#{index}"
       processedValue = @processData(pointer, value)
       mem.push(processedValue)
@@ -40,7 +40,7 @@ class Whitelist
     , [])
 
   _processObject: (parentPointer, obj) ->
-    _.reduce(_.pairs(obj), (mem, [key, value]) =>
+    Object.entries(obj).reduce((mem, [key, value]) =>
       pointer = "#{parentPointer}/#{key}"
       processedValue = @processData(pointer, value)
       mem[key] = processedValue
@@ -60,7 +60,7 @@ class Whitelist
     )
 
   _mask: (value) ->
-    if value && _.isFunction(value['toString']) && !_.isBoolean(value)
+    if value && typeof value['toString'] == 'function' && value != false && value != true
       value.toString().replace(/./g, MASK_SYMBOL)
     else
       MASK_SYMBOL

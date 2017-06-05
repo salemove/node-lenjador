@@ -1,4 +1,3 @@
-_  = require 'underscore'
 adaptersFactory = require('./logasm/adapters')
 preprocessorsFactory = require('./logasm/preprocessors')
 
@@ -39,7 +38,7 @@ class Logasm
       adapter.log level, processedData
 
   preprocess: (data) =>
-    _.reduce(@preprocessors, (processedData, preprocessor) =>
+    @preprocessors.reduce((processedData, preprocessor) =>
       preprocessor.process(processedData)
     , data)
 
@@ -53,7 +52,7 @@ class Logasm
         data['error'] = metadata.toString()
         data['error.stack_trace'] = metadata.stack if metadata.stack
       else
-        _.extend(data, metadata)
+        Object.assign(data, metadata)
 
       if message instanceof Error
         data['error'] = message.toString()

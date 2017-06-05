@@ -1,8 +1,7 @@
 Blacklist = require '../lib/logasm/preprocessors/blacklist'
-_ = require 'underscore'
 
 nest_data = (data, depth, value) ->
-  result = _.extend({}, data, {data: value})
+  result = Object.assign({}, data, {data: value})
   if depth > 0
     nest_data(data, depth - 1, result)
   else

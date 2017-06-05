@@ -1,4 +1,4 @@
-_ = require('underscore')
+{isObject} = require('../object_helpers')
 
 class Blacklist
 
@@ -12,27 +12,27 @@ class Blacklist
       @fieldActions[field.key] = @_getActionMethodName(action)
 
   process: (data) ->
-    if _.isArray(data)
+    if Array.isArray(data)
       @_processArray(data)
-    else if _.isObject(data)
+    else if isObject(data)
       @_processObject(data)
     else
       data
 
   _getActionMethodName: (action) ->
     actionMethodName = @_actionMethodName(action)
-    if !_.isFunction(@[actionMethodName])
+    if typeof @[actionMethodName] != 'function'
       throw Error("Action: #{action} is not supported")
     actionMethodName
 
   _processArray: (array) ->
-    _.reduce(array, (mem, value) =>
+    array.reduce((mem, value) =>
       mem.push(@process(value))
       mem
     , [])
 
   _processObject: (obj) ->
-    _.reduce(_.pairs(obj), (mem, [key, value]) =>
+    Object.entries(obj).reduce((mem, [key, value]) =>
       if key of @fieldActions
         mem = @_callAction(@fieldActions[key], mem, key, value)
       else

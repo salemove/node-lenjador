@@ -1,5 +1,4 @@
 Whitelist = require '../lib/logasm/preprocessors/whitelist'
-_ = require 'underscore'
 
 describe 'Whitelist', ->
   processedData = null
@@ -24,17 +23,6 @@ describe 'Whitelist', ->
     beforeEach ->
       whitelist = new Whitelist(config())
       processedData = whitelist.process(data())
-
-    context 'when includes fields from default whitelist', ->
-      pointers.is -> []
-      data.is ->
-        id: 'id'
-        message: 'message',
-        queue: 'queue',
-        correlation_id: 'correlation_id'
-
-      it 'includes fields', ->
-        expect(processedData).to.eql(data())
 
     context 'with whitelisted field', ->
       pointers.is -> ['/field']
