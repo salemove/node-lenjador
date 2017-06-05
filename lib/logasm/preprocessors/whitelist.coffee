@@ -2,11 +2,10 @@ _ = require('underscore')
 
 class Whitelist
 
-  DEFAULT_WHITELIST = ['/id', '/message', '/correlation_id', '/queue']
   MASK_SYMBOL = '*'
 
   constructor: (config) ->
-    pointers = _.union((config.pointers || []), DEFAULT_WHITELIST)
+    pointers = config.pointers || []
     @fieldsToInclude = {}
     for pointer in pointers
       @_validatePointer(pointer)
