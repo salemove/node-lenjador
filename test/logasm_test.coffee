@@ -6,22 +6,22 @@ describe 'Logasm', ->
   it 'creates stdout logger', (done) ->
     logasm = Logasm.build "My service", {stdout: {}}
 
-    logasm.adapters.should.have.length(1)
-    logasm.adapters[0].should.be.an.instanceof(StdoutAdapter)
+    expect(logasm.adapters).to.have.length(1)
+    expect(logasm.adapters[0]).to.be.an.instanceof(StdoutAdapter)
     done()
 
   it 'creates stdout logger when no loggers are specified', (done) ->
     logasm = Logasm.build "My service", undefined
 
-    logasm.adapters.should.have.length(1)
-    logasm.adapters[0].should.be.an.instanceof(StdoutAdapter)
+    expect(logasm.adapters).to.have.length(1)
+    expect(logasm.adapters[0]).to.be.an.instanceof(StdoutAdapter)
     done()
 
   it 'creates preprocessor when defined', (done) ->
     logasm = Logasm.build "My service", undefined, {blacklist: {fields: []}}
 
-    logasm.preprocessors.should.have.length(1)
-    logasm.preprocessors[0].should.be.an.instanceof(Blacklist)
+    expect(logasm.preprocessors).to.have.length(1)
+    expect(logasm.preprocessors[0]).to.be.an.instanceof(Blacklist)
     done()
 
   context 'when preprocessor defined', ->
@@ -48,23 +48,23 @@ describe 'Logasm', ->
     it 'parses empty string with no metadata', (done) ->
       result = @logasm.parseLogData('')
 
-      result.should.eql({message: ''})
+      expect(result).to.eql({message: ''})
       done()
 
     it 'parses undefined as metadata', (done) ->
       result = @logasm.parseLogData(undefined)
 
-      result.should.eql({message: undefined})
+      expect(result).to.eql({message: undefined})
       done()
 
     it 'parses only message', (done) ->
       result = @logasm.parseLogData('test message')
 
-      result.should.eql({message: 'test message'})
+      expect(result).to.eql({message: 'test message'})
       done()
 
     it 'message and metadata', (done) ->
       result = @logasm.parseLogData('test message', {test: 'data', more: 'testing'})
 
-      result.should.eql({message: 'test message', test: 'data', more: 'testing'})
+      expect(result).to.eql({message: 'test message', test: 'data', more: 'testing'})
       done()
