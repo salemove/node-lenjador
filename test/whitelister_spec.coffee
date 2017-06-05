@@ -102,20 +102,6 @@ describe 'Whitelist', ->
       it 'masks boolean', ->
         expect(processedData).to.eql({bool: '*****'})
 
-    context 'when field has slash in the name', ->
-      data.is -> {'field_with_/': 'secret'}
-      pointers.is -> ['/field_with_~1']
-
-      it 'does not include array', ->
-        expect(processedData).to.eql({'field_with_/': 'secret'})
-
-    context 'when field has tilde in the name', ->
-      data.is -> {'field_with_~': 'secret'}
-      pointers.is -> ['/field_with_~0']
-
-      it 'does not include array', ->
-        expect(processedData).to.eql({'field_with_~': 'secret'})
-
     describe 'wildcard', ->
       context 'with array elements whitelisted with wildcard', ->
         pointers.is -> ['/array/~']

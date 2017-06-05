@@ -1,29 +1,27 @@
 {isObject} = require('../object_helpers')
 
-isWildcardPointer = (pointer) ->
-  pointer.match(/\/\~\/|\~$/)
+addToWhitelist = (whitelist, pointerPaths) ->
+  whitelist[pointerPaths[0]] ?= {}
+  if pointerPaths.length > 0
+    addToWhitelist(whitelist[pointerPaths[0]], pointerPaths.splice(1))
 
 class Whitelist
 
   MASKED_VALUE = '*****'
+  WILDCARD_SYMBOL = '~'
 
   constructor: (config) ->
     pointers = config.pointers || []
 
-    @exactComparisonFields = {}
-    @regexComparisonFields = []
+    @whitelistedFields = {}
 
     for pointer in pointers
       @_validatePointer(pointer)
-
-      if isWildcardPointer(pointer)
-        wildcardMatcher = RegExp("^#{pointer.replace(/\/~/g, '/[^/]+')}$")
-        @regexComparisonFields.push(wildcardMatcher)
-      else
-        @exactComparisonFields[pointer] = true
+      pointerPaths = pointer.split('/').splice(1)
+      addToWhitelist(@whitelistedFields, pointerPaths)
 
   process: (data) ->
-    @processData('', data)
+    @processData([], data)
 
   _validatePointer: (pointer) ->
     if pointer.charAt(pointer.length - 1) == '/'
@@ -39,7 +37,7 @@ class Whitelist
 
   _processArray: (parentPointer, array) ->
     array.reduce((mem, value, index) =>
-      pointer = "#{parentPointer}/#{index}"
+      pointer = parentPointer.concat([index])
       processedValue = @processData(pointer, value)
       mem.push(processedValue)
       mem
@@ -47,20 +45,19 @@ class Whitelist
 
   _processObject: (parentPointer, obj) ->
     Object.entries(obj).reduce((mem, [key, value]) =>
-      pointer = "#{parentPointer}/#{key}"
+      pointer = parentPointer.concat([key])
       processedValue = @processData(pointer, value)
       mem[key] = processedValue
       mem
     , {})
 
   _processValue: (parentPointer, value) ->
-    if (parentPointer of @exactComparisonFields) || @_matchesWildcard(parentPointer)
-      value
-    else
-      MASKED_VALUE
+    location = @whitelistedFields
+    for pointer in parentPointer
+      location = location[pointer] || location[WILDCARD_SYMBOL]
+      unless location
+        return MASKED_VALUE
 
-  _matchesWildcard: (parentPointer) ->
-    @regexComparisonFields.some (wildcardMatcher) ->
-      parentPointer.match(wildcardMatcher)
+    value
 
 module.exports = Whitelist
