@@ -20,40 +20,35 @@ class Whitelist
       pointerPaths = pointer.split('/').splice(1)
       addToWhitelist(@whitelistedFields, pointerPaths)
 
-  process: (data) ->
-    @processData([], data)
+  process: (data, path = []) ->
+    if Array.isArray(data)
+      @_processArray(data, path)
+    else if isObject(data)
+      @_processObject(data, path)
+    else
+      @_processValue(data, path)
 
   _validatePointer: (pointer) ->
     if pointer.charAt(pointer.length - 1) == '/'
       throw Error('Pointer should not contain trailing slash')
 
-  processData: (parentPointer, data) ->
-    if Array.isArray(data)
-      @_processArray(parentPointer, data)
-    else if isObject(data)
-      @_processObject(parentPointer, data)
-    else
-      @_processValue(parentPointer, data)
-
-  _processArray: (parentPointer, array) ->
+  _processArray: (array, path) ->
     array.reduce((mem, value, index) =>
-      pointer = parentPointer.concat([index])
-      processedValue = @processData(pointer, value)
+      processedValue = @process(value, path.concat([index]))
       mem.push(processedValue)
       mem
     , [])
 
-  _processObject: (parentPointer, obj) ->
+  _processObject: (obj, path) ->
     Object.entries(obj).reduce((mem, [key, value]) =>
-      pointer = parentPointer.concat([key])
-      processedValue = @processData(pointer, value)
+      processedValue = @process(value, path.concat([key]))
       mem[key] = processedValue
       mem
     , {})
 
-  _processValue: (parentPointer, value) ->
+  _processValue: (value, path) ->
     location = @whitelistedFields
-    for pointer in parentPointer
+    for pointer in path
       location = location[pointer] || location[WILDCARD_SYMBOL]
       unless location
         return MASKED_VALUE
