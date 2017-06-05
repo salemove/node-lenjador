@@ -13,10 +13,7 @@
     "test": "mocha"
   },
   "dependencies": {
-    "async": "^2.4.1",
     "coffee-script": "^1.12.6",
-    "cycle": "1.0.x",
-    "q": "^2.0.3",
     "underscore": ">=1.6",
     "winston": "^2.3.1"
   },
