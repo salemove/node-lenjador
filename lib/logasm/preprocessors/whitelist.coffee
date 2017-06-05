@@ -2,7 +2,7 @@
 
 class Whitelist
 
-  MASK_SYMBOL = '*'
+  MASKED_VALUE = '*****'
 
   constructor: (config) ->
     pointers = config.pointers || []
@@ -51,18 +51,12 @@ class Whitelist
     if (parentPointer of @fieldsToInclude) || @_matchesWildcard(parentPointer)
       value
     else
-      @_mask(value)
+      MASKED_VALUE
 
   _matchesWildcard: (parentPointer) ->
     Object.keys(@fieldsToInclude).some((fieldToInclude) ->
       wildcardMatcher = RegExp("^#{fieldToInclude.replace(/\/~/g, '/[^/]+')}$")
       parentPointer.match(wildcardMatcher)
     )
-
-  _mask: (value) ->
-    if value && typeof value['toString'] == 'function' && value != false && value != true
-      value.toString().replace(/./g, MASK_SYMBOL)
-    else
-      MASK_SYMBOL
 
 module.exports = Whitelist

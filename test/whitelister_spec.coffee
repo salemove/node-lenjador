@@ -31,9 +31,9 @@ describe 'Whitelist', ->
         expect(processedData).to.eql({
           field: 'secret',
           nested: {
-            field: '******'
+            field: '*****'
           }
-          array: [{field: '******'}]
+          array: [{field: '*****'}]
         })
 
     context 'with whitelisted nested field', ->
@@ -41,11 +41,11 @@ describe 'Whitelist', ->
 
       it 'includes nested field', ->
         expect(processedData).to.eql({
-          field: '******',
+          field: '*****',
           nested: {
             field: 'secret'
           }
-          array: [{field: '******'}]
+          array: [{field: '*****'}]
         })
 
     context 'with whitelisted array element field', ->
@@ -53,9 +53,9 @@ describe 'Whitelist', ->
 
       it 'includes array element field', ->
         expect(processedData).to.eql({
-          field: '******',
+          field: '*****',
           nested: {
-            field: '******'
+            field: '*****'
           }
           array: [{field: 'secret'}]
         })
@@ -65,24 +65,23 @@ describe 'Whitelist', ->
 
       it 'masks array element', ->
         expect(processedData).to.eql({
-          field: '******',
+          field: '*****',
           nested: {
-            field: '******'
+            field: '*****'
           }
-          array: [{field: '******'}]
+          array: [{field: '*****'}]
         })
-
 
     context 'with whitelisted array', ->
       pointers.is -> ['/array']
 
       it 'masks array', ->
         expect(processedData).to.eql({
-          field: '******',
+          field: '*****',
           nested: {
-            field: '******'
+            field: '*****'
           }
-          array: [{field: '******'}]
+          array: [{field: '*****'}]
         })
 
     context 'with whitelisted object', ->
@@ -90,18 +89,18 @@ describe 'Whitelist', ->
 
       it 'masks array', ->
         expect(processedData).to.eql({
-          field: '******',
+          field: '*****',
           nested: {
-            field: '******'
+            field: '*****'
           }
-          array: [{field: '******'}]
+          array: [{field: '*****'}]
         })
 
     context 'when boolean present', ->
       data.is -> {bool: true}
 
-      it 'masks it with single asteriks', ->
-        expect(processedData).to.eql({bool: '*'})
+      it 'masks boolean', ->
+        expect(processedData).to.eql({bool: '*****'})
 
     context 'when field has slash in the name', ->
       data.is -> {'field_with_/': 'secret'}
@@ -138,7 +137,7 @@ describe 'Whitelist', ->
 
           it 'masks nested array elements', ->
             expect(processedData).to.eql({
-              array: [{field: '******'}]
+              array: [{field: '*****'}]
             })
 
       context 'with fields of array elements whitelisted with wildcard', ->
@@ -149,7 +148,7 @@ describe 'Whitelist', ->
 
         it 'does not mask the field array elements', ->
           expect(processedData).to.eql({
-            array: [{field: 'secret', field2: '******'}]
+            array: [{field: 'secret', field2: '*****'}]
           })
 
       context 'with hash fields whitelisted with wildcard', ->
@@ -182,7 +181,7 @@ describe 'Whitelist', ->
             expect(processedData).to.eql({
               object: {
                 nested: {
-                  field: '******'
+                  field: '*****'
                 }
               }
             })
@@ -203,7 +202,7 @@ describe 'Whitelist', ->
             object: {
               nested: {
                 field: 'secret'
-                field2: '******'
+                field2: '*****'
               }
             }
           })
@@ -223,12 +222,12 @@ describe 'Whitelist', ->
 
       it 'does not mask the field array elements', ->
         expect(processedData).to.eql({
-          password: "********"
+          password: "*****"
           info: {
             phone: "+12055555555"
           }
           addresses: [{
             host: "example.com"
-            path: "****"
+            path: "*****"
           }]
         })
