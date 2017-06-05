@@ -20,7 +20,7 @@ class Whitelist
         wildcardMatcher = RegExp("^#{pointer.replace(/\/~/g, '/[^/]+')}$")
         @regexComparisonFields.push(wildcardMatcher)
       else
-        @exactComparisonFields[@_decodePointer(pointer)] = true
+        @exactComparisonFields[pointer] = true
 
   process: (data) ->
     @processData('', data)
@@ -28,11 +28,6 @@ class Whitelist
   _validatePointer: (pointer) ->
     if pointer.charAt(pointer.length - 1) == '/'
       throw Error('Pointer should not contain trailing slash')
-
-  _decodePointer: (pointer) ->
-    pointer
-      .replace(/~0/g, '~')
-      .replace(/~1/g, '/')
 
   processData: (parentPointer, data) ->
     if Array.isArray(data)
