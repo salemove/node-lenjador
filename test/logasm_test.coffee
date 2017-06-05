@@ -1,6 +1,6 @@
 Logasm = require '../lib/logasm'
 StdoutAdapter = require '../lib/logasm/adapters/stdout_adapter'
-Blacklist = require '../lib/logasm/preprocessors/blacklist'
+Whitelist = require '../lib/logasm/preprocessors/whitelist'
 
 describe 'Logasm', ->
   it 'creates stdout logger', (done) ->
@@ -18,10 +18,10 @@ describe 'Logasm', ->
     done()
 
   it 'creates preprocessor when defined', (done) ->
-    logasm = Logasm.build "My service", undefined, {blacklist: {fields: []}}
+    logasm = Logasm.build "My service", undefined, {whitelist: {fields: []}}
 
     expect(logasm.preprocessors).to.have.length(1)
-    expect(logasm.preprocessors[0]).to.be.an.instanceof(Blacklist)
+    expect(logasm.preprocessors[0]).to.be.an.instanceof(Whitelist)
     done()
 
   context 'when preprocessor defined', ->
