@@ -1,9 +1,13 @@
 {isObject} = require('../object_helpers')
 
 addToWhitelist = (whitelist, pointerPaths) ->
-  whitelist[pointerPaths[0]] ?= {}
-  if pointerPaths.length > 0
-    addToWhitelist(whitelist[pointerPaths[0]], pointerPaths.splice(1))
+  path = pointerPaths[0]
+    .replace(/~0/g, '~') # ~ is encoded as ~0
+    .replace(/~1/g, '/') # / is encoded as ~1
+
+  whitelist[path] ?= {}
+  if pointerPaths.length > 1
+    addToWhitelist(whitelist[path], pointerPaths.splice(1))
 
 class Whitelist
 

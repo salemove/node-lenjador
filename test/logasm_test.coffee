@@ -18,7 +18,7 @@ describe 'Logasm', ->
     done()
 
   it 'creates preprocessor when defined', (done) ->
-    logasm = Logasm.build "My service", undefined, {whitelist: {fields: []}}
+    logasm = Logasm.build "My service", undefined, {whitelist: {pointers: []}}
 
     expect(logasm.preprocessors).to.have.length(1)
     expect(logasm.preprocessors[0]).to.be.an.instanceof(Whitelist)
