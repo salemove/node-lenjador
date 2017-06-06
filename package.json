@@ -1,7 +1,7 @@
 {
   "name": "logasm",
-  "version": "0.4.0",
-  "author": "Salemove <support@salemove.com>",
+  "version": "1.0.0",
+  "author": "Salemove TechMovers <techmovers@salemove.com>",
   "description": "It's logasmic",
   "repository": {
     "type": "git",
@@ -13,29 +13,21 @@
     "test": "mocha"
   },
   "dependencies": {
-    "coffee-script": ">=1.4",
-    "amqplib": ">=0.1.3",
-    "winston": ">= 0.9",
-    "cycle": "1.0.x",
-    "winston-logstash-udp": ">=0.0.4",
-    "async": ">=0.2.10",
-    "underscore": ">=1.6",
-    "q": ">= 1.0"
+    "coffee-script": "^1.12.6",
+    "winston": "^2.3.1"
   },
   "devDependencies": {
-    "mocha": "latest",
-    "chai": "latest",
-    "should": ">=3.1",
-    "sinon": "latest",
+    "chai": "^4.0.1",
     "memo-is": "~> 0.0.2",
+    "mocha": "^3.4.2",
+    "sinon": "^2.3.2",
     "sinon-chai": "~> 2.8.0"
   },
   "directories": {
     "test": "test"
   },
   "keywords": [
-    "logger",
-    "logstash"
+    "logger"
   ],
   "bugs": {
     "url": "https://github.com/salemove/node-logasm/issues"

@@ -1,23 +1,24 @@
 winston = require('winston')
-_  = require 'underscore'
+buildEvent = require('../event')
 
 class StdoutAdapter
-  constructor:(level) ->
+  constructor:(level, _serviceName, options) ->
     @logger = new winston.Logger
     @logger.add winston.transports.Console,
-      timestamp: ->
-        "#{new Date().toISOString()} ##{process.pid}"
+      json: Boolean(options.json)
+      timestamp: !Boolean(options.json) # Json adds @timestamp manually
       level: level
       colorize: true
+      stringify: (obj) -> JSON.stringify(obj)
 
-  log:(level, args) ->
-    args = _.extend({}, args)
-    message = args['message']
+  log: (level, args) ->
+    event = buildEvent(args)
+    message = event['message']
 
     if message
-      delete args['message']
-      @logger.log level, message, args
+      delete event['message']
+      @logger.log level, message, event
     else
-      @logger.log level, args
+      @logger.log level, event
 
 module.exports = StdoutAdapter

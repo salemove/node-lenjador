@@ -1,69 +1,66 @@
-_ = require('underscore')
+{isObject} = require('../object_helpers')
+
+addToWhitelist = (whitelist, pointerPaths) ->
+  path = pointerPaths[0]
+    .replace(/~0/g, '~') # ~ is encoded as ~0
+    .replace(/~1/g, '/') # / is encoded as ~1
+
+  whitelist[path] ?= {}
+  if pointerPaths.length > 1
+    addToWhitelist(whitelist[path], pointerPaths.splice(1))
 
 class Whitelist
 
-  DEFAULT_WHITELIST = ['/id', '/message', '/correlation_id', '/queue']
-  MASK_SYMBOL = '*'
+  MASKED_VALUE = '*****'
+  WILDCARD_SYMBOL = '~'
 
   constructor: (config) ->
-    pointers = _.union((config.pointers || []), DEFAULT_WHITELIST)
-    @fieldsToInclude = {}
+    pointers = config.pointers || []
+
+    # Winston logs the first argument as `message` field. Making sure this is
+    # always whitelisted.
+    pointers.push('/message')
+
+    @whitelistedFields = {}
+
     for pointer in pointers
       @_validatePointer(pointer)
-      @fieldsToInclude[@_decodePointer(pointer)] = true
+      pointerPaths = pointer.split('/').splice(1)
+      addToWhitelist(@whitelistedFields, pointerPaths)
 
-  process: (data) ->
-    @processData('', data)
+  process: (data, path = []) ->
+    if Array.isArray(data)
+      @_processArray(data, path)
+    else if isObject(data)
+      @_processObject(data, path)
+    else
+      @_processValue(data, path)
 
   _validatePointer: (pointer) ->
     if pointer.charAt(pointer.length - 1) == '/'
       throw Error('Pointer should not contain trailing slash')
 
-  _decodePointer: (pointer) ->
-    pointer
-      .replace(/~0/g, '~')
-      .replace(/~1/g, '/')
-
-  processData: (parentPointer, data) ->
-    if _.isArray(data)
-      @_processArray(parentPointer, data)
-    else if _.isObject(data)
-      @_processObject(parentPointer, data)
-    else
-      @_processValue(parentPointer, data)
-
-  _processArray: (parentPointer, array) ->
-    _.reduce(array, (mem, value, index) =>
-      pointer = "#{parentPointer}/#{index}"
-      processedValue = @processData(pointer, value)
+  _processArray: (array, path) ->
+    array.reduce((mem, value, index) =>
+      processedValue = @process(value, path.concat([index]))
       mem.push(processedValue)
       mem
     , [])
 
-  _processObject: (parentPointer, obj) ->
-    _.reduce(_.pairs(obj), (mem, [key, value]) =>
-      pointer = "#{parentPointer}/#{key}"
-      processedValue = @processData(pointer, value)
+  _processObject: (obj, path) ->
+    Object.entries(obj).reduce((mem, [key, value]) =>
+      processedValue = @process(value, path.concat([key]))
       mem[key] = processedValue
       mem
     , {})
 
-  _processValue: (parentPointer, value) ->
-    if (parentPointer of @fieldsToInclude) || @_matchesWildcard(parentPointer)
-      value
-    else
-      @_mask(value)
+  _processValue: (value, path) ->
+    location = @whitelistedFields
+    for pointer in path
+      location = location[pointer] || location[WILDCARD_SYMBOL]
+      unless location
+        return MASKED_VALUE
 
-  _matchesWildcard: (parentPointer) ->
-    Object.keys(@fieldsToInclude).some((fieldToInclude) ->
-      wildcardMatcher = RegExp("^#{fieldToInclude.replace(/\/~/g, '/[^/]+')}$")
-      parentPointer.match(wildcardMatcher)
-    )
-
-  _mask: (value) ->
-    if value && _.isFunction(value['toString']) && !_.isBoolean(value)
-      value.toString().replace(/./g, MASK_SYMBOL)
-    else
-      MASK_SYMBOL
+    value
 
 module.exports = Whitelist
