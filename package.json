@@ -13,7 +13,6 @@
     "test": "mocha"
   },
   "dependencies": {
-    "coffee-script": "^1.12.6",
     "winston": "~> 2.3"
   },
   "devDependencies": {
