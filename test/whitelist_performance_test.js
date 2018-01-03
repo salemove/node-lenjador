@@ -14,14 +14,32 @@ let buildPointers = function(exactPointersCount, wildcardPointersCount) {
   return pointers;
 };
 
-describe('Whitelist Performance', () =>
+let action = memo().is(() => '');
 
+describe('Whitelist Performance', function() {
+  context('with prune strategy', () => {
+    action.is(() => 'prune');
+
+    testPerformance();
+  });
+
+  context('with mask strategy', () => {
+    action.is(() => 'mask');
+
+    testPerformance();
+  });
+});
+
+function testPerformance() {
   it('processes 10K statements for 100 exact and wildcard pointers with less than 100 milliseconds', function() {
     let exactPointersCount = 100;
     let wildcardPointersCount = 100;
     let messagesToProcess = 10000;
 
-    let whitelist = new Whitelist({pointers: buildPointers(exactPointersCount, wildcardPointersCount)});
+    let whitelist = new Whitelist({
+      pointers: buildPointers(exactPointersCount, wildcardPointersCount),
+      action: action()
+    });
 
     let startTimestamp = new Date();
 
@@ -41,4 +59,4 @@ describe('Whitelist Performance', () =>
 
     expect(duration).to.be.at.most(100);
   })
-);
+}
