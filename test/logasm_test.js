@@ -71,5 +71,13 @@ describe('Logasm', function() {
 
       expect(result).to.eql({message: 'test message', test: 'data', more: 'testing'});
     });
+
+    it('parses Error', function() {
+      let result = logasm.parseLogData(new Error('test message'));
+
+      expect(result.message).to.match(/Error: test message/);
+      expect(result.error.message).to.eq('Error: test message');
+      expect(result.error.stack).to.match(/Error: test message/);
+    });
   });
 });
