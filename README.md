@@ -1,8 +1,8 @@
-# Logasm
+# Lenjador
 
 ## Installation
 ```
-  npm install --save logasm
+  npm install --save lenjador
 ```
 
 ## Preprocessors
@@ -26,7 +26,7 @@ preprocessors:
 #### Usage
 
 ```javascript
-logger = Logasm.build(application_name, logger_config, preprocessors)
+logger = Lenjador.build(application_name, logger_config, preprocessors)
 
 input = {password: 'password', info: {phone: '+12055555555'}, addresses: [{host: 'example.com', path: 'info'}]}
 

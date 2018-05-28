@@ -1,4 +1,4 @@
-const Whitelist = require('../lib/logasm/preprocessors/whitelist');
+const Whitelist = require('../lib/lenjador/preprocessors/whitelist');
 
 describe('Whitelist', function() {
   let processedData = null;

@@ -1,27 +1,27 @@
-const Logasm = require('../lib/logasm');
-const StdoutAdapter = require('../lib/logasm/adapters/stdout_adapter');
-const Whitelist = require('../lib/logasm/preprocessors/whitelist');
+const Lenjador = require('../lib/lenjador');
+const StdoutAdapter = require('../lib/lenjador/adapters/stdout_adapter');
+const Whitelist = require('../lib/lenjador/preprocessors/whitelist');
 
-describe('Logasm', function() {
+describe('Lenjador', function() {
   it('creates stdout logger', function() {
-    let logasm = Logasm.build("My service", {stdout: {}});
+    let lenjador = Lenjador.build("My service", {stdout: {}});
 
-    expect(logasm.adapters).to.have.length(1);
-    expect(logasm.adapters[0]).to.be.an.instanceof(StdoutAdapter);
+    expect(lenjador.adapters).to.have.length(1);
+    expect(lenjador.adapters[0]).to.be.an.instanceof(StdoutAdapter);
   });
 
   it('creates stdout logger when no loggers are specified', function() {
-    let logasm = Logasm.build("My service", undefined);
+    let lenjador = Lenjador.build("My service", undefined);
 
-    expect(logasm.adapters).to.have.length(1);
-    expect(logasm.adapters[0]).to.be.an.instanceof(StdoutAdapter);
+    expect(lenjador.adapters).to.have.length(1);
+    expect(lenjador.adapters[0]).to.be.an.instanceof(StdoutAdapter);
   });
 
   it('creates preprocessor when defined', function() {
-    let logasm = Logasm.build("My service", undefined, {whitelist: {pointers: []}});
+    let lenjador = Lenjador.build("My service", undefined, {whitelist: {pointers: []}});
 
-    expect(logasm.preprocessors).to.have.length(1);
-    expect(logasm.preprocessors[0]).to.be.an.instanceof(Whitelist);
+    expect(lenjador.preprocessors).to.have.length(1);
+    expect(lenjador.preprocessors[0]).to.be.an.instanceof(Whitelist);
   });
 
   context('when preprocessor defined', function() {
@@ -33,8 +33,8 @@ describe('Logasm', function() {
     };
 
     it('preprocesses data before logging', function() {
-      let logasm = new Logasm([adapter], [preprocessor]);
-      logasm.info('Received message', {data: 'data'});
+      let lenjador = new Lenjador([adapter], [preprocessor]);
+      lenjador.info('Received message', {data: 'data'});
 
       expect(preprocessor.process).to.be.calledWith({data: 'data', message: 'Received message'});
       expect(adapter.log).to.be.calledWith("info", {data:'processed', message: 'Received message'});
@@ -42,38 +42,38 @@ describe('Logasm', function() {
   });
 
   context('when parsing log data', function() {
-    let logasm;
+    let lenjador;
 
     beforeEach(function() {
-      logasm = Logasm.build('');
+      lenjador = Lenjador.build('');
     });
 
     it('parses empty string with no metadata', function() {
-      let result = logasm.parseLogData('');
+      let result = lenjador.parseLogData('');
 
       expect(result).to.eql({message: ''});
     });
 
     it('parses undefined as metadata', function() {
-      let result = logasm.parseLogData(undefined);
+      let result = lenjador.parseLogData(undefined);
 
       expect(result).to.eql({message: undefined});
     });
 
     it('parses only message', function() {
-      let result = logasm.parseLogData('test message');
+      let result = lenjador.parseLogData('test message');
 
       expect(result).to.eql({message: 'test message'});
     });
 
     it('message and metadata', function() {
-      let result = logasm.parseLogData('test message', {test: 'data', more: 'testing'});
+      let result = lenjador.parseLogData('test message', {test: 'data', more: 'testing'});
 
       expect(result).to.eql({message: 'test message', test: 'data', more: 'testing'});
     });
 
     it('parses Error', function() {
-      let result = logasm.parseLogData(new Error('test message'));
+      let result = lenjador.parseLogData(new Error('test message'));
 
       expect(result.message).to.match(/Error: test message/);
       expect(result.error.message).to.eq('Error: test message');
