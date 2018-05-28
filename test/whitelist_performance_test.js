@@ -1,4 +1,4 @@
-const Whitelist = require('../lib/logasm/preprocessors/whitelist');
+const Whitelist = require('../lib/lenjador/preprocessors/whitelist');
 
 let buildPointers = function(exactPointersCount, wildcardPointersCount) {
   let pointers = [];

@@ -1,14 +1,14 @@
 {
-  "name": "logasm",
+  "name": "lenjador",
   "version": "2.0.0",
   "author": "Salemove TechMovers <techmovers@salemove.com>",
-  "description": "It's logasmic",
+  "description": "It's lenjadoric",
   "repository": {
     "type": "git",
-    "url": "https://github.com/salemove/node-logasm.git"
+    "url": "https://github.com/salemove/node-lenjador.git"
   },
   "license": "Apache-2.0",
-  "main": "./lib/logasm",
+  "main": "./lib/lenjador",
   "scripts": {
     "test": "mocha"
   },
@@ -29,7 +29,7 @@
     "logger"
   ],
   "bugs": {
-    "url": "https://github.com/salemove/node-logasm/issues"
+    "url": "https://github.com/salemove/node-lenjador/issues"
   },
-  "homepage": "https://github.com/salemove/node-logasm"
+  "homepage": "https://github.com/salemove/node-lenjador"
 }

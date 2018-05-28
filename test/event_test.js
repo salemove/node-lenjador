@@ -1,4 +1,4 @@
-const buildEvent = require('../lib/logasm/event');
+const buildEvent = require('../lib/lenjador/event');
 
 describe('buildEvent', function() {
   it('adds application name', () => {
